@@ -1,8 +1,6 @@
 #pragma once
 #include "ActorData.h"
 
-typedef unsigned short ushort;
-
 /*
     struct
     GameData
@@ -10,9 +8,9 @@ typedef unsigned short ushort;
 */
 struct GameData
 {
-    const ushort dataCount;
-    const ActorData *data;
-
-    GameData(const ActorData *enData, ushort count)
-        : dataCount(count), data(enData) {}
+    const ushort actorsCount;
+    const ActorData *actorsData;
+    
+    GameData(const ActorData *enData, ushort numOfActors)
+        : actorsCount(numOfActors), actorsData(enData) {}
 };

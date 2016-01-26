@@ -1,5 +1,6 @@
 #pragma once
 #include <SDL.h>
+#include <random>
 #include "ImageData.h"
 #include "ActorData.h"
 #include "Image.h"
@@ -14,43 +15,47 @@
 class Actor
 {
 protected:
-    actorType type;
+    eActorType Type;
 
-    float x;
-    float y;
-    float startX;
-    float startY;
+    ushort ID;
+    float X;
+    float Y;
+    float StartX;
+    float StartY;
     
-    Image *image;
-    ushort width;
-    ushort height;
+    Image *ImageHandler;
+    ushort Width;
+    ushort Height;
 
-    ushort visible;
+    ushort Visible;
 
 public:
     Actor(const ActorData &params)
     {
-        type = params.type;
+        Type = params.type;
 
-        x = startX = params.x;
-        y = startY = params.y;
+        X = StartX = params.x;
+        Y = StartY = params.y;
 
-        image = nullptr;
-        width = params.image.width;
-        height = params.image.height;
+        ImageHandler = nullptr;
+        Width = params.image.width;
+        Height = params.image.height;
 
-        visible = params.visible;
+        Visible = params.visible;
     }
 
     void setVisibility(ushort visible);
 
     // some necessary getters
     float getX() const;
-    actorType getType() const;    
+    eActorType getType() const;    
     Image * getImage() const;
     SDL_Rect * getImageRect() const;
     ushort getWidth() const;
     ushort getHeight() const;
+    ushort getID() const;
+
+    void setID(ushort id);
 
     // methods used to get outer lines of the actor's rectangle
     // used in collision detection (SDL_IntersectRectAndLine)
@@ -60,10 +65,20 @@ public:
     void bottomSideLine(int &, int &, int &, int &) const;
 
     // stores pointer to Image object delivered by View
-    bool attachImage(Image *img);
+    void attachImage(Image *img);
 
     // in mose cases - brings Actor back to starting position
     virtual void reset();
+
+    // pure virtual - to be defined by child classes
     virtual void update() = 0;
+
+    virtual void addRandomDevice(std::random_device *rnd) {};
+
+    // virtual functions used to handle various types of collision
+    virtual eCollisionResult handleBorderCollision(eBorderPosition borderPos, ushort borderID);
+    virtual eCollisionResult handleBallCollision(Actor *ball);
+    virtual eCollisionResult handleEnemyCollision();
+    
 };
 

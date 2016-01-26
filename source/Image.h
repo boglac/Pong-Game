@@ -9,14 +9,14 @@
 */
 struct Image
 {
-    SDL_Texture *texture;
-    SDL_Rect *rect;
-    unsigned short visible;
+    SDL_Texture *Texture;
+    SDL_Rect *Rect;
+    unsigned short Visible;
 
     Image() 
     { 
-        texture = nullptr;
-        rect = nullptr;
-        visible = 1; 
+        Texture = nullptr;
+        Rect = nullptr;
+        Visible = 1; 
     }
 };

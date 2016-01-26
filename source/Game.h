@@ -5,12 +5,12 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "Ball.h"
+#include "Border.h"
 #include "Picture.h"
 #include "Text.h"
 #include "Scene.h"
 #include "View.h"
 #include "GameData.h"
-#include "GameParams.h"
 
 /*
     class
@@ -29,32 +29,29 @@ public:
         STATE_NEXTROUND
     };
 
-    gameState state;
+    gameState State;
 
     Game()
     {
-        state = STATE_INIT;
+        State = STATE_INIT;
 
-        score = nullptr;
+        Score = nullptr;
 
-        scene = nullptr;
-        view = nullptr;
+        SceneHandler = nullptr;
+        ViewHandler = nullptr;
 
-        losePicture = nullptr;
-        scorePicture = nullptr;
+        LosePicture = nullptr;
+        ScorePicture = nullptr;
 
-        // set default values for some parameters
-        params.boostThreshold = 10;
-        params.boostValue = 1.0f;
-        params.goalPoints = 1;        
+        ActorID = 1;
     }
 
     void attachRandomizer(std::random_device *rnd);
     void attachScene(Scene *scene);
     void attachView(View *view);
 
-    short init(const GameData &data);
-    void setParams(GameParams params);
+    Actor * createObject(ActorData data, ushort &created);
+    short init(const GameData &data, ushort typesMinimum);
 
     void update();
     void incPoints();
@@ -65,27 +62,29 @@ public:
     void onLeftClick();
 
 private:
-    Scene *scene;
-    View *view;
+    Scene *SceneHandler;
+    View *ViewHandler;
 
-    std::random_device *randomizer;
+    std::random_device *Randomizer;
 
-    Text *score;
+    Text *Score;
 
-    Picture *scorePicture;
-    Picture *losePicture;
-    Picture *boostPicture;
+    Picture *ScorePicture;
+    Picture *LosePicture;
+    Picture *BoostPicture;
+
+    ushort DemandedTypes;
+    ushort ActorID;
 
     struct Stats
     {
-        int score;
-        int scoreGain;
+        int Score;
+        int ScoreGain;
 
-        Stats() { score = 0; scoreGain = 0; }
+        Stats() { Score = 0; ScoreGain = 0; }
     };
 
-    Stats playerStats;
-    GameParams params;
+    Stats PlayerStats;
     
 };
 

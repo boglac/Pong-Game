@@ -1,5 +1,6 @@
 #pragma once
 #include "Actor.h"
+#include "Ball.h"
 #include <random>
 
 /*
@@ -12,13 +13,16 @@ class Enemy : public Actor
 public:
     Enemy(const ActorData &params) : Actor(params)
     {
-        speed = params.extra;
-        startSpeed = speed;
+        Speed = params.extra;
+        StartSpeed = Speed;
 
         rand = nullptr;
     }
 
     void setDirection(float sp);
+    
+    eCollisionResult handleBorderCollision(eBorderPosition borderPos, ushort borderID);
+    eCollisionResult handleBallCollision(Actor *ball);
 
     void reverse();
     void stabilize();
@@ -29,9 +33,9 @@ public:
     void addRandomDevice(std::random_device *rnd);
 
 private:
-    float speed;
-    float startSpeed;
-    float direction;
+    float Speed;
+    float StartSpeed;
+    float Direction;
 
     std::random_device *rand;
 };

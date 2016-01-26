@@ -1,12 +1,12 @@
 #pragma once
 #include <SDL.h>
 #include "Actor.h"
+#include "Border.h"
 #include "Enemy.h"
 #include "Player.h"
 #include "Ball.h"
 #include "Text.h"
 #include "View.h"
-#include "BorderData.h"
 
 /*
     class
@@ -17,23 +17,22 @@
 class Scene
 {
 public:
-    Scene(const BorderData &brdrs)
+    Scene()
     {
-        addBorders(brdrs);
-        children = nullptr;
+        Children = nullptr;
         
-        enemy = nullptr;
-        player = nullptr;
-        ball = nullptr;
+        EnemyHandler = nullptr;
+        PlayerHandler = nullptr;
+        BallHandler = nullptr;
     }
 
     ~Scene()
     {
         // TODO go through all children and delete them
-        delete children;
+        delete Children;
     }
 
-    void addBorders(const BorderData &borders);
+    void addBorders(const Border &borders);
     void addChild(Actor *child);
 
     void addRandomDevice(std::random_device *rnd);
@@ -52,38 +51,28 @@ public:
 
 private:
     struct Item {
-        Actor *elem;
-        Item *next;
-        Item() { elem = nullptr; next = nullptr; }
-    };
-
-    struct BorderItem {
-        SDL_Rect *elem;
-        BorderItem *next;
-        BorderItem() { elem = nullptr; next = nullptr; }
+        Actor *Elem;
+        Item *Next;
+        Item() { Elem = nullptr; Next = nullptr; }
     };
 
     // every child (Actor) added to the scene is appended to this list
-    Item *children;
+    Item *Children;
 
     // handy pointers
-    Player *player;
-    Enemy *enemy;
-    Ball *ball;
+    Player *PlayerHandler;
+    Enemy *EnemyHandler;
+    Ball *BallHandler;
         
     // 'flags' are set by the scene, when an event, about which Game object
     // should be notified, occurs. Game object then decides what to do.
-    unsigned short flags;
-    
-    // every border added to the scene is appended to this list
-    BorderItem *borders;
-    SDL_Rect *topBorder;
-    SDL_Rect *bottomBorder;
-    SDL_Rect *leftBorder;
-    SDL_Rect *rightBorder;
+    unsigned short Flags;
+
+    int LeftBorderX;
+    int RightBorderX;
 
     // random device pointer, delivered by parent Game object
-    std::random_device *rand;
+    std::random_device *Rand;
 };
 
 enum eventType {

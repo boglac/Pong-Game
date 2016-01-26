@@ -12,27 +12,27 @@ class Ball : public Actor
 public:
     Ball(const ActorData &params) : Actor(params)
     {
-        speed[0] = startSpeed[0] = float(params.extra);
-        speed[1] = startSpeed[1] = float(params.extra);
+        Speed[0] = StartSpeed[0] = float(params.extra);
+        Speed[1] = StartSpeed[1] = float(params.extra);
 
-        boost = 0;
-        boostApproved = false;
-        approveTime = 0;
+        Boost = 0;
+        BoostApproved = false;
+        ApproveTime = 0;
 
-        prevColVert = nullptr;
-        prevColHor = nullptr;
-        prevBorCol = nullptr;
+        PrevColVert = 0;
+        PrevColHor = 0;
+        PrevBorCol = 0;
 
-        rand = nullptr;
+        Rand = nullptr;
     }    
 
-    // prevColHor and prevColVert pointers are used to store the last Actor object the ball 
+    // prevColHor and prevColVert are used to store the last Actor object's ID the ball 
     // has collided with, to prevent colliding with the same object over and over again.
-    SDL_Rect *prevColHor;
-    SDL_Rect *prevColVert;
+    ushort PrevColHor;
+    ushort PrevColVert;
 
     // the same, as above, for border
-    SDL_Rect *prevBorCol;
+    ushort PrevBorCol;
 
     // movement modifiers, fired on collisions
     void reverseXVelocity();
@@ -46,6 +46,8 @@ public:
 
     float getXSpeed() const;
 
+    eCollisionResult handleBorderCollision(eBorderPosition borderPos, ushort borderID);
+
     void reset();
     void update();
 
@@ -54,20 +56,20 @@ public:
 private:
 
     // current ball speed
-    float speed[2];
+    float Speed[2];
 
     // startSpeed holds values given at config time
-    float startSpeed[2];
+    float StartSpeed[2];
 
     // speed boost, decreasing with time, triggered by Game through Scene
-    float boost;
+    float Boost;
 
     // boost is approved, if ball collides with player at the moment of left click
-    bool boostApproved;
-    Uint32 approveTime;
+    bool BoostApproved;
+    Uint32 ApproveTime;
 
     // random device is used on Ball reset, to generate random movement
     // delivered by parent Scene object
-    std::random_device *rand;
+    std::random_device *Rand;
 };
 

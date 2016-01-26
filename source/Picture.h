@@ -12,12 +12,12 @@ class Picture : public Actor
 public:
     Picture(const ActorData &params) : Actor(params) 
     {
-        purpose = params.extra;
+        Purpose = params.extra;
     }
     
     void update() {};
 private:
 
-    short purpose;
+    short Purpose;
 };
 
