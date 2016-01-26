@@ -11,10 +11,10 @@
 class Text : public Actor
 {
 public:
-    Text(const ActorData &params) : Actor(params), maxWidth(width), maxHeight(height)
+    Text(const ActorData &params) : Actor(params) 
     {
         setText(params.image.path);
-        purpose = params.extra;
+        Purpose = params.extra;
     }
 
     const char *getText() const;
@@ -24,10 +24,7 @@ public:
     void update() {};
     
 private:
-    char *text;
-    short purpose;
-
-    const unsigned short maxWidth;
-    const unsigned short maxHeight;
+    char *CurrentText;
+    short Purpose;
 };
 

@@ -1,158 +1,188 @@
 #include "Game.h"
 void Game::attachScene(Scene *s)
 {
-    scene = s;
-    scene->addRandomDevice(randomizer);
+    SceneHandler = s;
+    SceneHandler->addRandomDevice(Randomizer);
 }
 
 void Game::attachView(View *v)
 {
-    view = v;
+    ViewHandler = v;
 }
 
 void Game::attachRandomizer(std::random_device *rnd)
 {
-    randomizer = rnd;
+    Randomizer = rnd;
 }
 
-
-short Game::init(const GameData &gadata)
+Actor * Game::createObject(ActorData data, ushort &created)
 {
-    if (!scene || !view) return 1;
-
-    unsigned short createdTypes = 0, demandedTypes = TYPE_PLAYER | TYPE_BALL | TYPE_ENEMY;
-    
-    const ActorData *data = gadata.data;
     Actor *temp = nullptr;
-        
-    for (short i = 0; i < gadata.dataCount; ++i)
+
+    switch (data.type)
     {
-        if (data[i].type == TYPE_PLAYER) {
-            temp = new Player(data[i]);
-            temp->attachImage(view->loadTexture(data[i].image.path));
+        case TYPE_PLAYER:
+        {
+            temp = new Player(data);
+            temp->attachImage(ViewHandler->loadTexture(data.image.path));
 
-            createdTypes |= data[i].type;
+            created |= TYPE_PLAYER;
         }
-        else if (data[i].type == TYPE_BALL) {
-            temp = new Ball(data[i]);
-            temp->attachImage(view->loadTexture(data[i].image.path));
+        break;
 
-            createdTypes |= data[i].type;
-        }
-        else if (data[i].type == TYPE_ENEMY) {
-            temp = new Enemy(data[i]);
-            temp->attachImage(view->loadTexture(data[i].image.path));
+        case TYPE_BALL:
+        {
+            temp = new Ball(data);
+            temp->attachImage(ViewHandler->loadTexture(data.image.path));
 
-            createdTypes |= data[i].type;
+            created |= TYPE_BALL;
         }
-        else if (data[i].type == TYPE_PICTURE) {
-            temp = new Picture(data[i]);
-            temp->attachImage(view->loadTexture(data[i].image.path));
+        break;
+
+        case TYPE_ENEMY:
+        {
+            temp = new Enemy(data);
+            temp->attachImage(ViewHandler->loadTexture(data.image.path));
+
+            created |= TYPE_ENEMY;
+        }
+        break;
+
+        case TYPE_BORDER:
+        {
+            temp = new Border(data);
+            temp->attachImage(nullptr);
+        }
+        break;
+
+        case TYPE_PICTURE:
+        {
+            temp = new Picture(data);
+            temp->attachImage(ViewHandler->loadTexture(data.image.path));
 
             Picture *tempPicture = static_cast<Picture*>(temp);
 
             // store some pictures references
-            if (data[i].extra == PURPOSE_YOULOSE) losePicture = tempPicture;
-            else if (data[i].extra == PURPOSE_YOUSCORE) scorePicture = tempPicture;
-            else if (data[i].extra == PURPOSE_BOOST) boostPicture = tempPicture;
+            if (data.extra == PURPOSE_YOULOSE) LosePicture = tempPicture;
+            else if (data.extra == PURPOSE_YOUSCORE) ScorePicture = tempPicture;
+            else if (data.extra == PURPOSE_BOOST) BoostPicture = tempPicture;
         }
-        else if (data[i].type == TYPE_TEXT) {
-            temp = new Text(data[i]);
-            temp->attachImage(view->loadText(data[i].image.path));
+        break;
 
-            Text *tempText = static_cast<Text*>(temp);            
-            view->setTextSize(tempText);
+        case TYPE_TEXT:
+        {
+            temp = new Text(data);
+            temp->attachImage(ViewHandler->loadText(data.image.path));
+
+            Text *tempText = static_cast<Text*>(temp);
+            ViewHandler->setTextSize(tempText);
 
             // store score text reference
-            if (data[i].extra == PURPOSE_SCORE) score = tempText;
+            if (data.extra == PURPOSE_SCORE) Score = tempText;
         }
+        break;
 
-        // [ add other types creation here ]
+    }
 
-        if (temp) scene->addChild(temp);
+    temp->setID(ActorID++);
+
+    return temp;
+}
+
+short Game::init(const GameData &gadata, ushort typesMinimum)
+{
+    if (!SceneHandler || !ViewHandler) return 1;
+
+    DemandedTypes = typesMinimum;
+    unsigned short createdTypes = 0;
+    
+    const ActorData *data = gadata.actorsData;
+    Actor *temp = nullptr;
+        
+    for (short i = 0; i < gadata.actorsCount; ++i)
+    {
+        temp = createObject(data[i], createdTypes);
+        if (temp) SceneHandler->addChild(temp);
     }
 
     // check if all neccesary entity types has been created (PLAYER, BALL and ENEMY)
-    if (createdTypes != demandedTypes) return 2;
+    if (createdTypes < DemandedTypes) return 2;
 
-    state = STATE_GAME;
+    State = STATE_GAME;
     return 0;
-}
-
-void Game::setParams(GameParams p)
-{
-    params = p;
 }
 
 void Game::update()
 {
-    if (state != STATE_GAME) return;
+    if (State != STATE_GAME) return;
     
-    scene->update();
+    SceneHandler->update();
 
     // check scene flags
-    unsigned short flags = scene->getFlags();
+    unsigned short flags = SceneHandler->getFlags();
 
     if (flags & EVENT_WIN) incPoints();
     if (flags & EVENT_LOSE) decPoints();
 
-    if (flags & EVENT_BALLCOLL) scene->tellEnemies();
+    if (flags & EVENT_BALLCOLL) SceneHandler->tellEnemies();
     
-    scene->resetFlags();
+    SceneHandler->resetFlags();
 
     // update view
-    view->update();
+    ViewHandler->update();
 }
 
 void Game::onMouseMove(int x)
 {
-    scene->setPlayerPos(x);
+    SceneHandler->setPlayerPos(x);
 }
 
 void Game::onLeftClick()
 {
-    if (playerStats.scoreGain >= params.boostThreshold) {
-        scene->boostBall(params.boostValue);
-        playerStats.scoreGain = 0;
+    if (PlayerStats.ScoreGain >= 50) {
+        SceneHandler->boostBall(2.5f);
+        PlayerStats.ScoreGain = 0;
 
-        boostPicture->setVisibility(false);
+        BoostPicture->setVisibility(false);
     }
+
 }
 
 void Game::incPoints()
 {
-    playerStats.score += params.goalPoints;
-    playerStats.scoreGain += params.goalPoints;
+    PlayerStats.Score += 10;
+    PlayerStats.ScoreGain += 10;
 
-    if (playerStats.scoreGain >= params.boostThreshold) boostPicture->setVisibility(true);
+    if (PlayerStats.ScoreGain >= 50) BoostPicture->setVisibility(true);
 
-    scorePicture->setVisibility(1);
-    view->updateText(score, std::to_string(playerStats.score).std::string::c_str());
+    ScorePicture->setVisibility(1);
+    ViewHandler->updateText(Score, std::to_string(PlayerStats.Score).std::string::c_str());
 
-    view->update();
+    ViewHandler->update();
     nextRound();
 }
 
 void Game::decPoints()
 {
-    playerStats.score -= params.goalPoints;
-    playerStats.scoreGain -= params.goalPoints;
+    PlayerStats.Score -= 10;
+    PlayerStats.ScoreGain -= 10;
 
-    if (playerStats.scoreGain < params.boostThreshold) boostPicture->setVisibility(false);
+    if (PlayerStats.ScoreGain < 50) BoostPicture->setVisibility(false);
 
-    losePicture->setVisibility(1);
-    view->updateText(score, std::to_string(playerStats.score).std::string::c_str());
+    LosePicture->setVisibility(1);
+    ViewHandler->updateText(Score, std::to_string(PlayerStats.Score).std::string::c_str());
 
-    view->update();
+    ViewHandler->update();
     nextRound();
 }
 
 void Game::nextRound()
 {
-    state = STATE_NEXTROUND;
-    scene->resetChildren();
+    State = STATE_NEXTROUND;
+    SceneHandler->resetChildren();
     SDL_Delay(500);
-    losePicture->setVisibility(0);
-    scorePicture->setVisibility(0);
-    state = STATE_GAME;
+    LosePicture->setVisibility(0);
+    ScorePicture->setVisibility(0);
+    State = STATE_GAME;
+    
 }

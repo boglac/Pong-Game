@@ -2,34 +2,21 @@
 
 void Text::setText(const char *txt)
 {
-    text = ImageData::copyString(txt);
+    CurrentText = ImageData::copyString(txt);
 }
 
 const char * Text::getText() const
 {
-    return text;
+    return CurrentText;
 }
 
 void Text::setSize(int w, int h)
 {
-    if (w <= maxWidth) {
-        width = w;
-        image->rect->x = int(x - (w >> 1));
-        image->rect->w = w;
-    } else {
-        width = maxWidth;
-        image->rect->x = int(x - (width >> 1));
-        image->rect->w = width;
-    }
+    Width = w;
+    ImageHandler->Rect->x = int(X - (w >> 1));
+    ImageHandler->Rect->w = w;
 
-    if (h <= maxHeight) {
-        height = h;
-        image->rect->y = int(y - (h >> 1));
-        image->rect->h = h;
-    }
-    else {
-        height = maxHeight;
-        image->rect->y = int(x - (height >> 1));
-        image->rect->h = height;
-    }
+    Height = h;
+    ImageHandler->Rect->y = int(Y - (h >> 1));
+    ImageHandler->Rect->h = h;
 }

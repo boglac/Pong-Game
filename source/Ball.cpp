@@ -3,45 +3,45 @@
 
 void Ball::addRandomDevice(std::random_device *rnd)
 {
-    //rand = rnd;
+    Rand = rnd;
 }
 
 void Ball::reverseXVelocity()
 {    
-    speed[0] = -speed[0];
+    Speed[0] = -Speed[0];
 }
 
 void Ball::reverseYVelocity()
 {
-    speed[1] = -speed[1];
+    Speed[1] = -Speed[1];
 }
 
 void Ball::moveRight()
 {
-    if (speed[0] < 0) speed[0] = -speed[0];
+    if (Speed[0] < 0) Speed[0] = -Speed[0];
 }
 
 void Ball::moveLeft()
 {
-    if (speed[0] > 0) speed[0] = -speed[0];
+    if (Speed[0] > 0) Speed[0] = -Speed[0];
 }
 
 void Ball::alterXVelocity(float x)
 {
     if (x < -10) x = -10;
     if (x > 10) x = 10;
-    speed[0] = x;
+    Speed[0] = x;
 }
 
 void Ball::setBoost(float bst)
 {
-    if (boostApproved) boost = bst;
+    if (BoostApproved) Boost = bst;
 }
 
 void Ball::approveBoost(bool bst)
 {
-    if (bst) approveTime = SDL_GetTicks();
-    boostApproved = bst;
+    if (bst) ApproveTime = SDL_GetTicks();
+    BoostApproved = bst;
 }
 
 void::Ball::reset()
@@ -66,32 +66,52 @@ void::Ball::reset()
     if (!trigger(gen)) opposite = -1;
 
     // starting speed is the same on both axes
-    float defSpeed = startSpeed[0];
+    float defSpeed = StartSpeed[0];
 
-    speed[0] = defSpeed * rndX * opposite;
-    speed[1] = defSpeed * rndY * (opposite);
+    Speed[0] = defSpeed * rndX * opposite;
+    Speed[1] = defSpeed * rndY * (opposite);
 
-    boost = 0;
+    Boost = 0;
+    PrevBorCol = 0;
+    PrevColHor = PrevColVert = 0;
 }
 
 float Ball::getXSpeed() const
 {
-    return speed[0];
+    return Speed[0];
+}
+
+eCollisionResult Ball::handleBorderCollision(eBorderPosition borderPos, ushort borderID)
+{
+    // Because current Ball object has collided with a border (and a border isn't an Actor
+    // object for sure), set prevColHor and prevColVert pointers to nullptr, so
+    // that collisions with other Actor objects is possible again.
+    PrevColHor = 0;
+    PrevColVert = 0;
+
+    if (borderPos == BORDER_TOP) return RESULT_SCORE;
+    if (borderPos == BORDER_BOTTOM) return RESULT_LOSE;
+    
+    if ((borderPos == BORDER_LEFT || borderPos == BORDER_RIGHT) && PrevBorCol != borderID) {
+        PrevBorCol = borderID;
+        reverseXVelocity();
+        return RESULT_BALLCOLL;
+    }
 }
 
 void Ball::update()
 {
-    x += (speed[0] * boost);
-    y += (speed[1] * boost);
+    X += (Speed[0] * Boost);
+    Y += (Speed[1] * Boost);
 
-    if (boost > 1) boost -= 0.025f;
-    else if (boost < 1) boost = 1;
+    if (Boost > 1) Boost -= 0.025f;
+    else if (Boost < 1) Boost = 1;
 
-    image->rect->x = int(x - (width >> 1));
-    image->rect->y = int(y - (height >> 1));
+    ImageHandler->Rect->x = int(X - (Width >> 1));
+    ImageHandler->Rect->y = int(Y - (Height >> 1));
 
     // wait a while before disabling boost posibility
-    if (boostApproved && SDL_GetTicks() - approveTime > 150)
-        boostApproved = false;
+    if (BoostApproved && SDL_GetTicks() - ApproveTime > 150)
+        BoostApproved = false;
 }
 

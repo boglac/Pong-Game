@@ -21,9 +21,9 @@ class View
 public:
     View()
     {
-        renderer = nullptr;
-        textures = nullptr;
-        textFont = nullptr;
+        Renderer = nullptr;
+        Textures = nullptr;
+        TextFont = nullptr;
     }
 
     void setRenderer(SDL_Renderer *renderer);
@@ -44,15 +44,15 @@ public:
 
 private:
     struct Item {
-        Image *image;
-        Item *next;
-        Item() { image = nullptr; next = nullptr; }
+        Image *Image;
+        Item *Next;
+        Item() { Image = nullptr; Next = nullptr; }
     };
 
-    SDL_Renderer *renderer;
-    Item *textures;
-    TTF_Font * textFont;
-    SDL_Color textColor;
-    int textSize;
+    SDL_Renderer *Renderer;
+    Item *Textures;
+    TTF_Font * TextFont;
+    SDL_Color TextColor;
+    int TextSize;
 };
 
