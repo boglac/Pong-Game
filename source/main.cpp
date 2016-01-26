@@ -32,13 +32,13 @@ int main()
         cout << "+ SDL initialized successfully" << endl;
         cout << "\t+ Platform: " << SDL_GetPlatform() << endl;
 
-        if (!(IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG) & (IMG_INIT_PNG | IMG_INIT_JPG))) {
+        if (!(IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG) & IMG_INIT_PNG)) {
             cout << "-! IMG_Init error: \n\t" << IMG_GetError();
             SDL_Quit();
             getchar();
             return 1; 
         }
-       
+
         cout << "\t+ SDL_Image component ready" << endl;
 
         if (TTF_Init() != 0) {
@@ -88,16 +88,16 @@ int main()
         view.setFont(font, config::TEXT_COLOR, config::TEXT_SIZE);
         view.setRenderer(renderer);
                 
-        Scene scene(config::borders);
+        Scene scene;
         
         Game game;
-        random_device rd;       
+        random_device rd;
 
         game.attachRandomizer(&rd);
         game.attachScene(&scene);
         game.attachView(&view);
         
-        short result = game.init(config::data);
+        short result = game.init(config::data, config::DEMANDED_ACTORS);
         
         if (result == 1) cout << endl << "-! Game system error: scene or view not attached" << endl;
         else if (result == 2) {
@@ -105,9 +105,6 @@ int main()
             cout << "\n\t- Check config for PLAYER, ENEMY or BALL" << endl;
         }
         else cout << endl << "+ Game initialized" << endl;
-
-        // set game parameters (like goal points or boost). Optional.
-        game.setParams(config::params);
 
         // Get window surface
         appScreen = SDL_GetWindowSurface(appWindow);
