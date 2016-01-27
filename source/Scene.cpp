@@ -5,53 +5,6 @@
 #include <iostream>
 #endif
 
-void Scene::addBorders(const Border &brdrs)
-{
-    /*
-    // it is possible to don't have any borders
-    if (!brdrs.bordersCount) return;
-    
-    // there is data for one border at least - create it
-    Borders = new BorderItem;
-
-    Borders->Elem = new Border;
-    Borders->Elem->x = brdrs.borders[0].x;
-    Borders->Elem->y = brdrs.borders[0].y;
-    Borders->Elem->w = brdrs.borders[0].w;
-    Borders->Elem->h = brdrs.borders[0].h;
-        
-    Borders->Elem->topBorder = true;
-
-    BorderItem *temp = Borders;
-    Border *tempRect;
-
-    for (int i = 1; i < brdrs.bordersCount; ++i)
-    {
-        temp->Next = new BorderItem;
-        temp->Next->Elem = new Border;
-
-        tempRect = temp->Next->Elem;
-        tempRect->x = brdrs.borders[i].x;
-        tempRect->y = brdrs.borders[i].y;
-        tempRect->w = brdrs.borders[i].w;
-        tempRect->h = brdrs.borders[i].h;
-
-        // set outer borders
-        if (i == 1) tempRect->bottomBorder = true;
-        else if (i == 2) {
-            tempRect->leftBorder = true;
-            LeftBorderX = tempRect->x;
-        }
-        else if (i == 3) {
-            tempRect->rightBorder = true;
-            RightBorderX = tempRect->x;
-        }
-
-        temp = temp->Next;
-    }
-    */
-}
-
 void Scene::addChild(Actor *child)
 {
     eActorType type;
