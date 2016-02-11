@@ -32,7 +32,6 @@ public:
         delete Children;
     }
 
-    void addBorders(const Border &borders);
     void addChild(Actor *child);
 
     void addRandomDevice(std::random_device *rnd);
