@@ -44,6 +44,13 @@ public:
         ScorePicture = nullptr;
 
         ActorID = 1;
+
+        // set defaults for game behaviour parameters
+        GameParameters.BallAcceleration = 10.0f;
+        GameParameters.BallBoost = 2.5f;
+        GameParameters.GainThreshold = 50;
+        GameParameters.PointsForScore = 10;
+        GameParameters.RoundDelay = 500;
     }
 
     void attachRandomizer(std::random_device *rnd);
@@ -52,6 +59,9 @@ public:
 
     Actor * createObject(ActorData data, ushort &created);
     short init(const GameData &data, ushort typesMinimum);
+
+    // If this function is not called, default parameters for game behaviour will be used.
+    void setGameParameters(int scorePoints, int gainThreshold = 0, float ballAccell = 0, float ballBoost = 0, unsigned int delay = 0);
 
     void update();
     void incPoints();
@@ -69,22 +79,39 @@ private:
 
     Text *Score;
 
+    // references to GUI images
     Picture *ScorePicture;
     Picture *LosePicture;
     Picture *BoostPicture;
 
     ushort DemandedTypes;
+
+    // Game object distributes IDs between Actors
     ushort ActorID;
 
+    // Stats class is used to store current game statistics (like score)
     struct Stats
     {
         int Score;
         int ScoreGain;
+    };
 
-        Stats() { Score = 0; ScoreGain = 0; }
+    /** Object of type Parameters is used to store values for parameters
+    defining game behaviour (like amount of points for score or acceleration the
+    ball receives after collision) */
+    struct Parameters
+    {
+        float BallAcceleration;
+        float BallBoost;
+
+        int GainThreshold;
+        int PointsForScore;
+
+        unsigned int RoundDelay;
     };
 
     Stats PlayerStats;
+    Parameters GameParameters;
     
 };
 

@@ -33,6 +33,11 @@ void Ball::alterXVelocity(float x)
     Speed[0] = x;
 }
 
+void Ball::setAcceleration(float accel)
+{
+    Acceleration = accel;
+}
+
 void Ball::setBoost(float bst)
 {
     if (BoostApproved) Boost = bst;
@@ -79,6 +84,11 @@ void::Ball::reset()
 float Ball::getXSpeed() const
 {
     return Speed[0];
+}
+
+float Ball::getAcceleration() const
+{
+    return Acceleration;
 }
 
 eCollisionResult Ball::handleBorderCollision(eBorderPosition borderPos, ushort borderID)

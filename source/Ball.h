@@ -15,6 +15,8 @@ public:
         Speed[0] = StartSpeed[0] = float(params.extra);
         Speed[1] = StartSpeed[1] = float(params.extra);
 
+        Acceleration = 10.0f;
+
         Boost = 0;
         BoostApproved = false;
         ApproveTime = 0;
@@ -41,10 +43,12 @@ public:
     void moveRight();
     void moveLeft();
 
+    void setAcceleration(float accel);
     void setBoost(float boost);
     void approveBoost(bool boost);
 
     float getXSpeed() const;
+    float getAcceleration() const;
 
     eCollisionResult handleBorderCollision(eBorderPosition borderPos, ushort borderID);
 
@@ -60,6 +64,9 @@ private:
 
     // startSpeed holds values given at config time
     float StartSpeed[2];
+
+    // determines acceleration the ball gains after a collision
+    float Acceleration;
 
     // speed boost, decreasing with time, triggered by Game through Scene
     float Boost;

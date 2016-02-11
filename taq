@@ -1,0 +1,58 @@
+[33mcommit 8f098f3ee24383f5c64de087aed19dd9f8c123fb[m
+Author: boglac <bogogames@outlook.com>
+Date:   Tue Jan 26 19:50:17 2016 +0100
+
+    Updated main.cpp. Moved it to 'source' folder.
+
+[33mcommit e76abb0c76f9c1937702f7aa4fa02aefae1eefd7[m
+Merge: b6a6c9a d281387
+Author: boglac <bogogames@outlook.com>
+Date:   Tue Jan 26 19:47:15 2016 +0100
+
+    Merge branch 'master' of github.com:boglac/Pong-Game
+
+[33mcommit b6a6c9a583e081d85d8397437f23a6babec44ae5[m
+Author: boglac <bogogames@outlook.com>
+Date:   Tue Jan 26 19:43:36 2016 +0100
+
+    Code improvements
+    
+    Removed spaghetti code, added more versatile collision handling
+    (until now Scene object did all work, now each class handles collision on it's own).
+
+[33mcommit d281387d82b7e03c59473aa3892f9d8882f5d85f[m
+Author: boglac <bogogames@outlook.com>
+Date:   Tue Jan 26 19:43:36 2016 +0100
+
+    Code improvements: removed spaghetti code, added more versatile collision handling
+    (until now Scene object did all work, now each class handles collision on it's own).
+
+[33mcommit c409ebabf4c0f3cd23da4403293b2dfa5ba5f4b8[m
+Author: boglac <bogogames@outlook.com>
+Date:   Tue Nov 24 17:04:06 2015 +0100
+
+    Update README.md
+
+[33mcommit 1bf06ba887c01ae806f93c2170af3626b1b08686[m
+Author: boglac <bogogames@outlook.com>
+Date:   Tue Nov 24 17:03:32 2015 +0100
+
+    Update README.md
+
+[33mcommit 6348cdf8e96c8250fb4f92d7e16d74d95525d0a6[m
+Author: boglac <bogogames@outlook.com>
+Date:   Tue Nov 24 17:03:05 2015 +0100
+
+    Update README.md
+
+[33mcommit c25bae942ef4d6fc2c11cb63a4e734171534dd0a[m
+Author: boglac <bogogames@outlook.com>
+Date:   Tue Nov 24 16:51:13 2015 +0100
+
+    Create README.md
+
+[33mcommit 5ef4012654314702825a453cc97fc6801c9ef0bd[m
+Author: boglac <bogogames@outlook.com>
+Date:   Tue Nov 24 15:58:47 2015 +0100
+
+    Initial commit. Adding Source files and images.

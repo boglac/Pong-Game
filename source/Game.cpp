@@ -34,6 +34,8 @@ Actor * Game::createObject(ActorData data, ushort &created)
         {
             temp = new Ball(data);
             temp->attachImage(ViewHandler->loadTexture(data.image.path));
+            
+            static_cast<Ball*>(temp)->setAcceleration(GameParameters.BallAcceleration);            
 
             created |= TYPE_BALL;
         }
@@ -112,6 +114,15 @@ short Game::init(const GameData &gadata, ushort typesMinimum)
     return 0;
 }
 
+void Game::setGameParameters(int scorePoints, int gainThreshold, float ballAccell, float ballBoost, unsigned int delay)
+{
+    GameParameters.PointsForScore = scorePoints;
+    GameParameters.GainThreshold = gainThreshold;
+    GameParameters.BallAcceleration = ballAccell;
+    GameParameters.BallBoost = ballBoost;
+    GameParameters.RoundDelay = delay;
+}
+
 void Game::update()
 {
     if (State != STATE_GAME) return;
@@ -139,8 +150,8 @@ void Game::onMouseMove(int x)
 
 void Game::onLeftClick()
 {
-    if (PlayerStats.ScoreGain >= 50) {
-        SceneHandler->boostBall(2.5f);
+    if (PlayerStats.ScoreGain >= GameParameters.GainThreshold) {
+        SceneHandler->boostBall(GameParameters.BallBoost);
         PlayerStats.ScoreGain = 0;
 
         BoostPicture->setVisibility(false);
@@ -150,10 +161,10 @@ void Game::onLeftClick()
 
 void Game::incPoints()
 {
-    PlayerStats.Score += 10;
-    PlayerStats.ScoreGain += 10;
+    PlayerStats.Score += GameParameters.PointsForScore;
+    PlayerStats.ScoreGain += GameParameters.PointsForScore;
 
-    if (PlayerStats.ScoreGain >= 50) BoostPicture->setVisibility(true);
+    if (PlayerStats.ScoreGain >= GameParameters.GainThreshold) BoostPicture->setVisibility(true);
 
     ScorePicture->setVisibility(1);
     ViewHandler->updateText(Score, std::to_string(PlayerStats.Score).std::string::c_str());
@@ -164,10 +175,10 @@ void Game::incPoints()
 
 void Game::decPoints()
 {
-    PlayerStats.Score -= 10;
-    PlayerStats.ScoreGain -= 10;
+    PlayerStats.Score -= GameParameters.PointsForScore;
+    PlayerStats.ScoreGain -= GameParameters.PointsForScore;
 
-    if (PlayerStats.ScoreGain < 50) BoostPicture->setVisibility(false);
+    if (PlayerStats.ScoreGain < GameParameters.GainThreshold) BoostPicture->setVisibility(false);
 
     LosePicture->setVisibility(1);
     ViewHandler->updateText(Score, std::to_string(PlayerStats.Score).std::string::c_str());
@@ -180,7 +191,7 @@ void Game::nextRound()
 {
     State = STATE_NEXTROUND;
     SceneHandler->resetChildren();
-    SDL_Delay(500);
+    SDL_Delay(GameParameters.RoundDelay);
     LosePicture->setVisibility(0);
     ScorePicture->setVisibility(0);
     State = STATE_GAME;

@@ -73,7 +73,7 @@ eCollisionResult Enemy::handleBallCollision(Actor *ball)
         if (tempBall->PrevColVert != ID) {
 
             // calculate new angle (more to the sides of object, greater the angle)
-            float xVel = -10.0f * (X - tempBall->getX()) / Width;
+            float xVel = -tempBall->getAcceleration() * (X - tempBall->getX()) / Width;
             tempBall->alterXVelocity(xVel);
             tempBall->reverseYVelocity();
 
@@ -86,7 +86,7 @@ eCollisionResult Enemy::handleBallCollision(Actor *ball)
         if (SDL_IntersectRectAndLine(tempBall->getImageRect(), &startX, &startY, &endX, &endY)) {
             if (tempBall->PrevColVert != ID) {
 
-                float xVel = -10.0f * (X - tempBall->getX()) / Width;
+                float xVel = -tempBall->getAcceleration() * (X - tempBall->getX()) / Width;
                 tempBall->alterXVelocity(xVel);
                 tempBall->reverseYVelocity();
 

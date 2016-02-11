@@ -96,7 +96,8 @@ int main()
         game.attachRandomizer(&rd);
         game.attachScene(&scene);
         game.attachView(&view);
-        
+
+        game.setGameParameters(config::SCORE_POINTS, config::GAIN_THRESHOLD, config::BALL_ACCELERATION, config::BALL_BOOST, config::ROUND_DELAY);
         short result = game.init(config::data, config::DEMANDED_ACTORS);
         
         if (result == 1) cout << endl << "-! Game system error: scene or view not attached" << endl;

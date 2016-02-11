@@ -23,6 +23,13 @@ namespace config {
 
     // define which actors will be checked for collision
     const unsigned short COLLISION_MODE = TYPE_PLAYER | TYPE_BALL | TYPE_ENEMY;
+
+    // game behaviour parameters
+    const float BALL_ACCELERATION = 15.0f;
+    const float BALL_BOOST = 2.5f;
+    const int SCORE_POINTS = 10;
+    const int GAIN_THRESHOLD = 50;
+    const unsigned int ROUND_DELAY = 500;
     
     // In order to change some of the game's parameters, alter this array. New actors can be added, or current modified 
     // (image, position, speed). If a new actor is added, remember to increase the value of the second argument for GameData object creation.
